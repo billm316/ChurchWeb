@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,18 +22,13 @@ namespace ChurchWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ChurchWebDbContext>(options => options.UseInMemoryDatabase("TestInMemory"));
-            services.AddScoped<ICarouselItemRepository, CarouselItemRepository>();
-            services.AddScoped<INavBarItemRepository, NavBarItemRepository>();
+            DependencyInjection(services);
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.AccessDeniedPath = "/Home/ErrorForbidden";
-                    options.LoginPath = "/Home/ErrorNotLoggedIn";
-                });
+            AuthenticationServices(services);
 
-            services.AddMvc();
+            AuthorizationServices(services);
+
+            MVCServices(services);            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +44,8 @@ namespace ChurchWeb
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            SecurityHeaders(app, env);
+
             app.UseStaticFiles();
 
             app.UseAuthentication();
@@ -59,6 +57,46 @@ namespace ChurchWeb
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            InitializeInMemoryDatabase(app, env);
+        }
+
+        private void AuthenticationServices(IServiceCollection services)
+        {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.AccessDeniedPath = "/Home/ErrorForbidden";
+                    options.LoginPath = "/Home/ErrorNotLoggedIn";
+                });
+        }
+
+        private void AuthorizationServices(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ChurchMember", policy => policy.RequireClaim("ChurchMember"));
+            });
+        }
+
+        private void DependencyInjection(IServiceCollection services)
+        {
+            services.AddDbContext<ChurchWebDbContext>(options => options.UseInMemoryDatabase("TestInMemory"));
+            services.AddScoped<ICarouselItemRepository, CarouselItemRepository>();
+            services.AddScoped<INavBarItemRepository, NavBarItemRepository>();
+        }
+
+        private void MVCServices(IServiceCollection services)
+        {
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                options.Filters.Add(new RequireHttpsAttribute());
+            }
+            );
+        }
+
+        private void InitializeInMemoryDatabase(IApplicationBuilder app, IHostingEnvironment env)
+        {
             /*
              * does appear to continue to be the recommended approach for seeding from what I have seen Well, 
              * not exactly. Using scoped yes, but not inside Configure method, do to the way EF Core 2.0 does 
@@ -120,6 +158,15 @@ namespace ChurchWeb
                     dbContext.SaveChanges();
                 }
             }
+        }
+
+        private void SecurityHeaders(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseHsts(options => options.MaxAge(days: 365).IncludeSubdomains());
+            app.UseXXssProtection(options => options.EnabledWithBlockMode());
+            app.UseXContentTypeOptions();
+            app.UseReferrerPolicy(options => options.StrictOriginWhenCrossOrigin());
+            app.UseCsp(options => options.UpgradeInsecureRequests());
         }
     }
 }

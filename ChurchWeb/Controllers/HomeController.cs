@@ -24,60 +24,6 @@ namespace ChurchWeb.Controllers
             _navBarItemRepository = navBarItemRepository;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                return RedirectToAction("Index");
-            }
-
-            var identity = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Name, name),
-            },
-            CookieAuthenticationDefaults.AuthenticationScheme);
-            var principle = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principle);
-
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public IActionResult Login() => View(model: new LayoutViewModel
-        {
-            NavBarItems = _navBarItemRepository.GetAll().ToList()
-        });
-
-        [HttpGet]
-        public async Task<IActionResult> Logout(string name)
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            return RedirectToAction("Index");
-        }
-
-        [Authorize]
-        public IActionResult Directory() => View(model: new LayoutViewModel
-        {
-            NavBarItems = _navBarItemRepository.GetAll().ToList()
-        });
-
-        public IActionResult ErrorNotLoggedIn() => View(model: new LayoutViewModel
-        {
-            NavBarItems = _navBarItemRepository.GetAll().ToList()
-        });
-
-        public IActionResult Index()
-        {
-            return View(model: new IndexViewModel
-            {
-                NavBarItems = _navBarItemRepository.GetAll().ToList(),
-                CarouselItems = _carouselItemRepository.GetAll().ToList()
-            });
-        }
-
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -98,9 +44,72 @@ namespace ChurchWeb.Controllers
             });
         }
 
+        [Authorize]
+        [Authorize(Policy ="ChurchMember")]
+        public IActionResult Directory() => View(model: new LayoutViewModel
+        {
+            NavBarItems = _navBarItemRepository.GetAll().ToList()
+        });
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult ErrorNotLoggedIn() => View(model: new LayoutViewModel
+        {
+            NavBarItems = _navBarItemRepository.GetAll().ToList()
+        });
+
+        public IActionResult ErrorForbidden() => View(model: new LayoutViewModel
+        {
+            NavBarItems = _navBarItemRepository.GetAll().ToList()
+        });
+
+        public IActionResult Index()
+        {
+            return View(model: new IndexViewModel
+            {
+                NavBarItems = _navBarItemRepository.GetAll().ToList(),
+                CarouselItems = _carouselItemRepository.GetAll().ToList()
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, name),
+                //new Claim("ChurchMember", "ChurchMember"),
+            },
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var principle = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                principle);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Login() => View(model: new LayoutViewModel
+        {
+            NavBarItems = _navBarItemRepository.GetAll().ToList()
+        });
+
+        [HttpGet]
+        public async Task<IActionResult> Logout(string name)
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Index");
         }
     }
 }
