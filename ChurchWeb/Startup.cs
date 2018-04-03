@@ -62,6 +62,7 @@ namespace ChurchWeb
 
         private void AuthenticationServices(IServiceCollection services)
         {
+            // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?tabs=aspnetcore2x
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -105,7 +106,8 @@ namespace ChurchWeb
              * running dotnet ef migrations or dotnet ef database update will also execute the seeding, 
              * something you pretty much don't want when running the command line tools – Tseng Sep 5 '17 at 23:10 
              * Just FYI; there's a CreateScope extension method directly on IServiceProvider, so you can 
-             * cut .GetRequiredService<IServiceScopeFactory>() and just call that directly :) – khellang Sep 6 '17 at 5:28
+             * cut .GetRequiredService<IServiceScopeFactory>() and just call that directly :) – khellang Sep 6 
+             * '17 at 5:28
              * https://stackoverflow.com/questions/46063945/cannot-resolve-dbcontext-in-asp-net-core-2-0
              * https://stackoverflow.com/questions/45941707/why-remove-migration-run-my-app/45942026#45942026
              */

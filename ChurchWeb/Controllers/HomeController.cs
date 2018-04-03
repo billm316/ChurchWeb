@@ -44,8 +44,7 @@ namespace ChurchWeb.Controllers
             });
         }
 
-        [Authorize]
-        [Authorize(Policy ="ChurchMember")]
+        [Authorize(Roles = "ChurchMember")]
         public IActionResult Directory() => View(model: new LayoutViewModel
         {
             NavBarItems = _navBarItemRepository.GetAll().ToList()
@@ -86,7 +85,7 @@ namespace ChurchWeb.Controllers
             var identity = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, name),
-                //new Claim("ChurchMember", "ChurchMember"),
+                new Claim(ClaimTypes.Role, "ChurchMember")
             },
             CookieAuthenticationDefaults.AuthenticationScheme);
 

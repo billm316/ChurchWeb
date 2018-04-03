@@ -5,11 +5,13 @@ VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchWeb", "ChurchWeb\ChurchWeb.csproj", "{1E678F59-9D5A-40F0-9F4E-DC0DEC5EF105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchWebEntities", "ChurchWebRepository\ChurchWebEntities.csproj", "{A8CB1A40-EF46-4D19-8276-E55DB233F992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchWebEntities", "ChurchWebRepository\ChurchWebEntities.csproj", "{A8CB1A40-EF46-4D19-8276-E55DB233F992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityHTML", "EntityHTML\EntityHTML.csproj", "{A6ADE473-390A-410F-A8E1-E25890BA5279}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityHTML", "EntityHTML\EntityHTML.csproj", "{A6ADE473-390A-410F-A8E1-E25890BA5279}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{63949BBB-B6B7-4400-8BD2-B497EA7C022A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{63949BBB-B6B7-4400-8BD2-B497EA7C022A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchWebAuthorization", "ChurchWebAuthorization\ChurchWebAuthorization.csproj", "{57D6E5C8-AC94-43ED-851B-2C5AD81F4E73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{63949BBB-B6B7-4400-8BD2-B497EA7C022A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63949BBB-B6B7-4400-8BD2-B497EA7C022A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63949BBB-B6B7-4400-8BD2-B497EA7C022A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57D6E5C8-AC94-43ED-851B-2C5AD81F4E73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57D6E5C8-AC94-43ED-851B-2C5AD81F4E73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57D6E5C8-AC94-43ED-851B-2C5AD81F4E73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57D6E5C8-AC94-43ED-851B-2C5AD81F4E73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
