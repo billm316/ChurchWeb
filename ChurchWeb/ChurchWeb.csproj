@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ChurchWebAuthorization\ChurchWebAuthorization.csproj" />
     <ProjectReference Include="..\ChurchWebRepository\ChurchWebEntities.csproj" />
     <ProjectReference Include="..\EntityHTML\EntityHTML.csproj" />
     <ProjectReference Include="..\Repository\Repository.csproj" />

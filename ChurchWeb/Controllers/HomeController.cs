@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using ChurchWebAuthorization;
 
 namespace ChurchWeb.Controllers
 {
@@ -44,7 +45,7 @@ namespace ChurchWeb.Controllers
             });
         }
 
-        [Authorize(Roles = "ChurchMember")]
+        [Authorize(Policy = CustomClaims.ChurchMember)]
         public IActionResult Directory() => View(model: new LayoutViewModel
         {
             NavBarItems = _navBarItemRepository.GetAll().ToList()
@@ -85,7 +86,8 @@ namespace ChurchWeb.Controllers
             var identity = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, name),
-                new Claim(ClaimTypes.Role, "ChurchMember")
+                //new Claim(ClaimTypes.Role, "ChurchMember")
+                new Claim(CustomClaimTypes.Permission, "ChurchMember")
             },
             CookieAuthenticationDefaults.AuthenticationScheme);
 

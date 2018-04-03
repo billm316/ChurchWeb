@@ -1,5 +1,7 @@
-﻿using ChurchWebEntities;
+﻿using ChurchWebAuthorization;
+using ChurchWebEntities;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -75,8 +77,10 @@ namespace ChurchWeb
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ChurchMember", policy => policy.RequireClaim("ChurchMember"));
+                options.AddPolicy(CustomClaims.ChurchMember, policy => policy.Requirements.Add(new ChurchMember()));
             });
+
+            services.AddSingleton<IAuthorizationHandler, ChurchMemberHandler>();
         }
 
         private void DependencyInjection(IServiceCollection services)
