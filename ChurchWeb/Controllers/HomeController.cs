@@ -86,8 +86,7 @@ namespace ChurchWeb.Controllers
             var identity = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, name),
-                //new Claim(ClaimTypes.Role, "ChurchMember")
-                new Claim(CustomClaimTypes.Permission, "ChurchMember")
+                new Claim(CustomClaimTypes.Permission, CustomClaims.ChurchMember)
             },
             CookieAuthenticationDefaults.AuthenticationScheme);
 
