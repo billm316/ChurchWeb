@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ChurchWebAuthorization
 {
+    // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies
     public class ChurchMemberHandler : AuthorizationHandler<ChurchMember>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ChurchMember requirement)

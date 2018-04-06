@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository;
+//using ChurchWeb.Data;
+using ChurchWeb.Models;
+using ChurchWeb.Services;
 
 namespace ChurchWeb
 {
@@ -29,6 +33,16 @@ namespace ChurchWeb
             AuthenticationServices(services);
 
             AuthorizationServices(services);
+
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ChurchWebDbContext>()
+                .AddDefaultTokenProviders();
+
+            // Add application services.
+            services.AddTransient<IEmailSender, EmailSender>();
 
             MVCServices(services);            
         }
@@ -57,10 +71,16 @@ namespace ChurchWeb
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { Controller = "Home", action = "Index" });
             });
 
             InitializeInMemoryDatabase(app, env);
         }
+
+        #region ConfigureServices
 
         private void AuthenticationServices(IServiceCollection services)
         {
@@ -75,6 +95,7 @@ namespace ChurchWeb
 
         private void AuthorizationServices(IServiceCollection services)
         {
+            // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(CustomClaims.ChurchMember, policy => policy.Requirements.Add(new ChurchMember()));
@@ -99,6 +120,10 @@ namespace ChurchWeb
             }
             );
         }
+
+        #endregion ConfigureServices
+
+        #region Configure
 
         private void InitializeInMemoryDatabase(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -174,5 +199,7 @@ namespace ChurchWeb
             app.UseReferrerPolicy(options => options.StrictOriginWhenCrossOrigin());
             app.UseCsp(options => options.UpgradeInsecureRequests());
         }
+
+        #endregion Configure
     }
 }
